@@ -32,10 +32,6 @@ const registrationSchema = z.object({
   ageCategory: z.enum(["U6", "U8", "U10", "U12", "U14", "U16", "Open"], {
     required_error: "Please select an age category",
   }),
-  paymentBank: z.enum(["BOC", "Commercial Bank"], {
-    required_error: "Please select the bank you used for payment",
-  }),
-  paymentReference: z.string().min(3, "Payment reference is required"),
   agreeToTerms: z.boolean().refine(val => val === true, {
     message: "You must agree to the terms",
   }),
@@ -67,7 +63,6 @@ const Register = () => {
   const watchedDate = watch("dateOfBirth");
   const watchedGender = watch("gender");
   const watchedAgeCategory = watch("ageCategory");
-  const watchedPaymentBank = watch("paymentBank");
   const watchedAgreeToTerms = watch("agreeToTerms");
 
   const onSubmit = async (data: RegistrationForm) => {
@@ -135,21 +130,27 @@ const Register = () => {
                   <div><span className="font-medium">Name:</span> {registrationData.fullName}</div>
                   <div><span className="font-medium">Category:</span> {registrationData.ageCategory}</div>
                   <div><span className="font-medium">Contact:</span> {registrationData.contactNumber}</div>
-                  <div><span className="font-medium">Payment Bank:</span> {registrationData.paymentBank}</div>
-                  <div className="md:col-span-2">
-                    <span className="font-medium">Payment Reference:</span> {registrationData.paymentReference}
-                  </div>
                 </div>
               </div>
 
               <div className="flex flex-col sm:flex-row gap-3">
+              
                 <Button 
-                  onClick={copyReference}
+                  asChild
                   variant="outline"
-                  className="flex-1"
+                  className="flex-1 bg-green-100 hover:bg-green-200 text-green-800 border-green-300"
                 >
-                  <Copy className="h-4 w-4 mr-2" />
-                  Copy Reference
+                  <a 
+                    href="https://chat.whatsapp.com/DMgHeHloJyf5BBucdp1nv6" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center"
+                  >
+                    <svg className="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M17.498 14.382v-.002c-.301-.15-1.767-.868-2.04-.966-.273-.101-.473-.15-.673.15-.197.295-.771.963-.944 1.16-.174.199-.347.224-.646.075-.3-.15-1.27-.466-2.42-1.485-.894-.794-1.484-1.76-1.66-2.06-.174-.3-.02-.462.13-.61.136-.135.3-.345.45-.523.146-.18.194-.3.296-.5.1-.2.05-.375-.025-.525-.075-.15-.674-1.62-.922-2.206-.24-.584-.487-.5-.673-.51-.172-.008-.371-.01-.571-.01-.2 0-.523.074-.797.36-.273.3-1.05 1.02-1.05 2.48s1.07 2.88 1.225 3.075c.15.195 2.1 3.195 5.1 4.485.715.3 1.27.48 1.71.63.715.226 1.37.194 1.89.12.574-.08 1.767-.72 2.016-1.425.255-.705.255-1.29.18-1.425-.074-.135-.27-.21-.57-.36m-5.446 7.443h-.016a7.2 7.2 0 01-3.9-1.13l-.3-.18-3.12.82.84-3.045-.2-.314a7.19 7.19 0 01-1.1-3.84 7.25 7.25 0 012.17-5.13 7.25 7.25 0 015.12-2.13h.06c1.92 0 3.75.75 5.12 2.12a7.25 7.25 0 012.13 5.13 7.19 7.19 0 01-2.12 5.13 7.13 7.13 0 01-5.04 2.12M20.52 3.45A11 11 0 0012.07 0h-.14A11 11 0 00.99 16.6L0 24l7.57-1.98a11.02 11.02 0 004.5.96h.06a11 11 0 007.8-18.75"/>
+                    </svg>
+                    Join WhatsApp Group
+                  </a>
                 </Button>
                 <Button 
                   onClick={registerAnother}
@@ -161,7 +162,7 @@ const Register = () => {
               </div>
 
               <div className="text-center text-sm text-muted-foreground">
-                <p>Thank you for registering! We'll see you at the tournament.</p>
+                <p>Thank you for registering! Join our WhatsApp group for updates.</p>
                 <p className="mt-1">For any questions, contact: 074 123 1133</p>
               </div>
             </CardContent>
@@ -329,34 +330,14 @@ const Register = () => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>Payment Bank *</Label>
-                  <Select value={watchedPaymentBank} onValueChange={(value) => setValue("paymentBank", value as any)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select payment bank" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="BOC">Bank of Ceylon (BOC)</SelectItem>
-                      <SelectItem value="Commercial Bank">Commercial Bank</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  {errors.paymentBank && (
-                    <p className="text-sm text-destructive">{errors.paymentBank.message}</p>
-                  )}
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="paymentReference">Payment Reference / Slip No. *</Label>
-                  <Input
-                    id="paymentReference"
-                    {...register("paymentReference")}
-                    placeholder="Enter payment reference"
-                    className="w-full"
-                  />
-                  {errors.paymentReference && (
-                    <p className="text-sm text-destructive break-words">{errors.paymentReference.message}</p>
-                  )}
+              <div className="space-y-4">
+                <h3 className="text-lg font-medium">Payment Information</h3>
+                <div className="text-sm text-muted-foreground">
+                  <p>Please make the payment to one of the following accounts:</p>
+                  <ul className="list-disc pl-5 mt-1 space-y-1">
+                    <li>Bank of Ceylon (BOC): 7396371 - M. Thushanth</li>
+                    <li>Commercial Bank: 8001613595 - G. Thuvaragan</li>
+                  </ul>
                 </div>
               </div>
 
@@ -368,7 +349,7 @@ const Register = () => {
                     onCheckedChange={(checked) => setValue("agreeToTerms", checked as boolean)}
                   />
                   <Label htmlFor="agreeToTerms" className="text-sm">
-                    I confirm the above details are correct and I've paid the entry fee of 1000 LKR. *
+                    I confirm the above details are correct *
                   </Label>
                 </div>
                 {errors.agreeToTerms && (

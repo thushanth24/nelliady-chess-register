@@ -72,7 +72,7 @@ const Home = () => {
                 <Button 
                   variant="outline" 
                   size="lg" 
-                  className="w-full sm:w-auto border-white text-white hover:bg-white hover:text-black"
+                  className="w-full sm:w-auto border-white text-yellow bg-white/10 hover:bg-white hover:text-black transition-colors duration-200"
                   onClick={() => scrollToSection('details')}
                 >
                   View Details
@@ -82,17 +82,17 @@ const Home = () => {
 
             <div className="flex justify-center lg:justify-end mt-8 lg:mt-0">
               <div className="relative">
-                <div className="w-64 h-64 sm:w-80 sm:h-80 lg:w-96 lg:h-96 bg-white/10 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-tournament">
+                <div className="w-full max-w-[300px] sm:max-w-[350px] lg:max-w-[400px] bg-white/10 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-2 sm:p-4 shadow-tournament">
                   <img 
-                    src="/posters/NCC-1.png" 
+                    src="/posters/NCC 1.png" 
                     alt="NCC Chess Tournament Season 06 Poster" 
-                    className="w-full h-full object-cover rounded-xl sm:rounded-2xl"
+                    className="w-full h-auto object-contain rounded-xl sm:rounded-2xl"
                     onError={(e) => {
                       e.currentTarget.style.display = 'none';
                       e.currentTarget.nextElementSibling?.classList.remove('hidden');
                     }}
                   />
-                  <div className="hidden w-full h-full bg-chess-yellow/20 rounded-xl sm:rounded-2xl flex items-center justify-center">
+                  <div className="hidden w-full h-full bg-chess-yellow/20 rounded-xl sm:rounded-2xl items-center justify-center">
                     <Trophy className="h-16 w-16 sm:h-20 sm:w-20 lg:h-24 lg:w-24 text-chess-yellow" />
                   </div>
                 </div>
@@ -111,7 +111,7 @@ const Home = () => {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-            <Card className="text-center p-4 sm:p-6">
+            <Card className="text-center p-4 sm:p-6 bg-gradient-to-br from-chess-yellow/5 to-chess-yellow/10">
               <CardContent className="pt-4 sm:pt-6">
                 <Calendar className="h-8 w-8 sm:h-10 sm:w-10 lg:h-12 lg:w-12 text-chess-yellow mx-auto mb-3 sm:mb-4" />
                 <h3 className="font-bold text-base sm:text-lg mb-2">Date</h3>
@@ -119,7 +119,7 @@ const Home = () => {
               </CardContent>
             </Card>
 
-            <Card className="text-center p-4 sm:p-6">
+            <Card className="text-center p-4 sm:p-6 bg-gradient-to-br from-chess-yellow/5 to-chess-yellow/10">
               <CardContent className="pt-4 sm:pt-6">
                 <Clock className="h-8 w-8 sm:h-10 sm:w-10 lg:h-12 lg:w-12 text-chess-yellow mx-auto mb-3 sm:mb-4" />
                 <h3 className="font-bold text-base sm:text-lg mb-2">Time</h3>
@@ -127,7 +127,7 @@ const Home = () => {
               </CardContent>
             </Card>
 
-            <Card className="text-center p-4 sm:p-6">
+            <Card className="text-center p-4 sm:p-6 bg-gradient-to-br from-chess-yellow/5 to-chess-yellow/10">
               <CardContent className="pt-4 sm:pt-6">
                 <MapPin className="h-8 w-8 sm:h-10 sm:w-10 lg:h-12 lg:w-12 text-chess-yellow mx-auto mb-3 sm:mb-4" />
                 <h3 className="font-bold text-base sm:text-lg mb-2">Venue</h3>
@@ -135,7 +135,7 @@ const Home = () => {
               </CardContent>
             </Card>
 
-            <Card className="text-center p-4 sm:p-6">
+            <Card className="text-center p-4 sm:p-6 bg-gradient-to-br from-chess-yellow/5 to-chess-yellow/10">
               <CardContent className="pt-4 sm:pt-6">
                 <Users className="h-8 w-8 sm:h-10 sm:w-10 lg:h-12 lg:w-12 text-chess-yellow mx-auto mb-3 sm:mb-4" />
                 <h3 className="font-bold text-base sm:text-lg mb-2">Organizer</h3>
@@ -169,7 +169,7 @@ const Home = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-8 sm:mb-12">
-            <Card className="text-center p-4 sm:p-6 border-chess-yellow shadow-glow-yellow">
+            <Card className="text-center p-4 sm:p-6 border-chess-yellow shadow-glow-yellow bg-gradient-to-br from-chess-yellow/10 to-amber-50">
               <CardContent className="pt-4 sm:pt-6">
                 <Trophy className="h-12 w-12 sm:h-14 sm:w-14 lg:h-16 lg:w-16 text-chess-yellow mx-auto mb-3 sm:mb-4" />
                 <h3 className="font-bold text-lg sm:text-xl mb-2 text-chess-yellow">1st Place</h3>
@@ -177,7 +177,7 @@ const Home = () => {
               </CardContent>
             </Card>
 
-            <Card className="text-center p-4 sm:p-6">
+            <Card className="text-center p-4 sm:p-6 bg-gradient-to-br from-chess-yellow/5 to-chess-yellow/10">
               <CardContent className="pt-4 sm:pt-6">
                 <Medal className="h-12 w-12 sm:h-14 sm:w-14 lg:h-16 lg:w-16 text-muted-foreground mx-auto mb-3 sm:mb-4" />
                 <h3 className="font-bold text-lg sm:text-xl mb-2">2nd Place</h3>
@@ -185,7 +185,7 @@ const Home = () => {
               </CardContent>
             </Card>
 
-            <Card className="text-center p-4 sm:p-6 md:col-span-2 lg:col-span-1">
+            <Card className="text-center p-4 sm:p-6 md:col-span-2 lg:col-span-1 bg-gradient-to-br from-amber-50 to-amber-100">
               <CardContent className="pt-4 sm:pt-6">
                 <Award className="h-12 w-12 sm:h-14 sm:w-14 lg:h-16 lg:w-16 text-amber-600 mx-auto mb-3 sm:mb-4" />
                 <h3 className="font-bold text-lg sm:text-xl mb-2">3rd Place</h3>
@@ -195,7 +195,7 @@ const Home = () => {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
-            <Card className="text-center p-4 sm:p-6">
+            <Card className="text-center p-4 sm:p-6 bg-gradient-to-br from-chess-yellow/5 to-chess-yellow/10">
               <CardContent className="pt-4 sm:pt-6">
                 <Medal className="h-10 w-10 sm:h-12 sm:w-12 text-muted-foreground mx-auto mb-3 sm:mb-4" />
                 <h3 className="font-bold text-base sm:text-lg mb-2">4th & 5th Place</h3>
@@ -203,7 +203,7 @@ const Home = () => {
               </CardContent>
             </Card>
 
-            <Card className="text-center p-4 sm:p-6">
+            <Card className="text-center p-4 sm:p-6 bg-gradient-to-br from-chess-yellow/5 to-chess-yellow/10">
               <CardContent className="pt-4 sm:pt-6">
                 <Award className="h-10 w-10 sm:h-12 sm:w-12 text-muted-foreground mx-auto mb-3 sm:mb-4" />
                 <h3 className="font-bold text-base sm:text-lg mb-2">All Participants</h3>
@@ -214,7 +214,7 @@ const Home = () => {
 
           <div className="text-center">
             <img 
-              src="/posters/NCC-2.png" 
+              src="/posters/NCC 2.png" 
               alt="Prize Details Poster" 
               className="mx-auto w-full max-w-xs sm:max-w-sm md:max-w-md h-auto rounded-lg sm:rounded-xl shadow-tournament"
               onError={(e) => {
@@ -234,7 +234,7 @@ const Home = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 mb-8 sm:mb-12">
-            <Card className="p-4 sm:p-6">
+            <Card className="p-4 sm:p-6 bg-gradient-to-br from-blue-50 to-blue-100">
               <CardContent className="pt-4 sm:pt-6">
                 <div className="flex items-start mb-4">
                   <Building2 className="h-6 w-6 sm:h-7 sm:w-7 lg:h-8 lg:w-8 text-chess-yellow mr-2 sm:mr-3 flex-shrink-0 mt-1" />
@@ -248,7 +248,7 @@ const Home = () => {
               </CardContent>
             </Card>
 
-            <Card className="p-4 sm:p-6">
+            <Card className="p-4 sm:p-6 bg-gradient-to-br from-blue-50 to-blue-100">
               <CardContent className="pt-4 sm:pt-6">
                 <div className="flex items-start mb-4">
                   <CreditCard className="h-6 w-6 sm:h-7 sm:w-7 lg:h-8 lg:w-8 text-chess-yellow mr-2 sm:mr-3 flex-shrink-0 mt-1" />
@@ -272,7 +272,7 @@ const Home = () => {
             </div>
 
             <img 
-              src="/posters/bank.jpeg" 
+              src="/posters/bank1.jpeg" 
               alt="Bank Details Poster" 
               className="mx-auto w-full max-w-xs sm:max-w-sm md:max-w-md h-auto rounded-lg sm:rounded-xl shadow-tournament"
               onError={(e) => {
