@@ -332,7 +332,7 @@ const Register = () => {
                     id="fullName"
                     {...register("fullName")}
                     placeholder="Enter your full name"
-                    className="w-full"
+                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-chess-yellow focus:border-transparent"
                   />
                   {errors.fullName && (
                     <p className="text-sm text-destructive break-words">{errors.fullName.message}</p>
@@ -345,7 +345,7 @@ const Register = () => {
                     id="nameWithInitials"
                     {...register("nameWithInitials")}
                     placeholder="e.g., A.B. Smith"
-                    className="w-full"
+                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-chess-yellow focus:border-transparent"
                   />
                   {errors.nameWithInitials && (
                     <p className="text-sm text-destructive break-words">{errors.nameWithInitials.message}</p>
@@ -359,7 +359,7 @@ const Register = () => {
                   id="fideId"
                   {...register("fideId")}
                   placeholder="Enter your FIDE ID if you have one"
-                  className="w-full"
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-chess-yellow focus:border-transparent"
                 />
               </div>
 
@@ -368,7 +368,6 @@ const Register = () => {
                 <Input
                   type="date"
                   id="dateOfBirth"
-                  className="w-full"
                   value={watchedDate ? format(watchedDate, "yyyy-MM-dd") : ""}
                   onChange={(e) => {
                     const date = e.target.value ? new Date(e.target.value) : null;
@@ -377,6 +376,7 @@ const Register = () => {
                     }
                   }}
                   max={format(new Date(), "yyyy-MM-dd")}
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-chess-yellow focus:border-transparent"
                 />
                 {errors.dateOfBirth && (
                   <p className="text-sm text-destructive">
@@ -393,16 +393,28 @@ const Register = () => {
                   className="flex flex-col space-y-2"
                 >
                   <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="Male" id="male" />
-                    <Label htmlFor="male">Male</Label>
+                    <RadioGroupItem 
+                      value="Male" 
+                      id="male" 
+                      className="h-5 w-5 text-chess-yellow border-gray-300 focus:ring-chess-yellow"
+                    />
+                    <Label htmlFor="male" className="text-gray-700">Male</Label>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="Female" id="female" />
-                    <Label htmlFor="female">Female</Label>
+                    <RadioGroupItem 
+                      value="Female" 
+                      id="female" 
+                      className="h-5 w-5 text-chess-yellow border-gray-300 focus:ring-chess-yellow"
+                    />
+                    <Label htmlFor="female" className="text-gray-700">Female</Label>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="Prefer not to say" id="prefer-not-to-say" />
-                    <Label htmlFor="prefer-not-to-say">Prefer not to say</Label>
+                    <RadioGroupItem 
+                      value="Prefer not to say" 
+                      id="prefer-not-to-say" 
+                      className="h-5 w-5 text-chess-yellow border-gray-300 focus:ring-chess-yellow"
+                    />
+                    <Label htmlFor="prefer-not-to-say" className="text-gray-700">Prefer not to say</Label>
                   </div>
                 </RadioGroup>
                 {errors.gender && (
@@ -417,7 +429,7 @@ const Register = () => {
                     id="contactNumber"
                     {...register("contactNumber")}
                     placeholder="077 123 4567"
-                    className="w-full"
+                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-chess-yellow focus:border-transparent"
                   />
                   {errors.contactNumber && (
                     <p className="text-sm text-destructive break-words">{errors.contactNumber.message}</p>
@@ -475,8 +487,9 @@ const Register = () => {
                     id="agreeToTerms"
                     checked={watchedAgreeToTerms}
                     onCheckedChange={(checked) => setValue("agreeToTerms", checked as boolean)}
+                    className="h-5 w-5 rounded border-gray-300 text-chess-yellow focus:ring-chess-yellow"
                   />
-                  <Label htmlFor="agreeToTerms" className="text-sm">
+                  <Label htmlFor="agreeToTerms" className="text-sm text-gray-700">
                     I confirm the above details are correct *
                   </Label>
                 </div>
