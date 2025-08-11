@@ -2,41 +2,57 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* Chess Tournament Design System - Bold Black & Yellow Theme */
 
 @layer base {
   :root {
+    /* Core colors - Chess theme */
     --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-
+    --foreground: 0 0% 0%;
+    
+    /* Tournament brand colors */
+    --chess-black: 0 0% 0%;
+    --chess-yellow: 51 100% 50%;
+    --chess-yellow-bright: 51 100% 65%;
+    --chess-gold: 45 100% 60%;
+    
+    /* UI Components */
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 0 0% 0%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 0 0% 0%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 0 0% 0%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 51 100% 50%;
+    --secondary-foreground: 0 0% 0%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 45%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 51 100% 50%;
+    --accent-foreground: 0 0% 0%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --success: 120 60% 50%;
+    --success-foreground: 0 0% 100%;
 
-    --radius: 0.5rem;
+    --border: 0 0% 90%;
+    --input: 0 0% 100%;
+    --ring: 51 100% 50%;
+
+    --radius: 0.75rem;
+    
+    /* Tournament specific design tokens */
+    --hero-gradient: linear-gradient(135deg, hsl(var(--chess-black)), hsl(var(--chess-black)) 60%, hsl(var(--chess-yellow)) 100%);
+    --glow-yellow: 0 0 20px hsl(var(--chess-yellow) / 0.5);
+    --glow-yellow-strong: 0 0 30px hsl(var(--chess-yellow) / 0.8);
+    --shadow-tournament: 0 10px 30px -10px hsl(var(--chess-black) / 0.3);
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
     --sidebar-background: 0 0% 98%;
 

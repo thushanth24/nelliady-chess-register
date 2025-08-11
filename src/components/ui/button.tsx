@@ -18,6 +18,8 @@ const buttonVariants = cva(
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
+        tournament: "bg-chess-yellow text-chess-black hover:bg-chess-yellow-bright font-bold transition-all duration-300 transform hover:scale-105 shadow-glow-yellow hover:shadow-glow-yellow-strong",
+        hero: "bg-chess-black text-chess-yellow border-2 border-chess-yellow hover:bg-chess-yellow hover:text-chess-black font-bold text-lg transition-all duration-300 transform hover:scale-105 shadow-glow-yellow hover:shadow-glow-yellow-strong",
       },
       size: {
         default: "h-10 px-4 py-2",

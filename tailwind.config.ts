@@ -36,6 +36,10 @@ export default {
 					DEFAULT: 'hsl(var(--destructive))',
 					foreground: 'hsl(var(--destructive-foreground))'
 				},
+				success: {
+					DEFAULT: 'hsl(var(--success))',
+					foreground: 'hsl(var(--success-foreground))'
+				},
 				muted: {
 					DEFAULT: 'hsl(var(--muted))',
 					foreground: 'hsl(var(--muted-foreground))'
@@ -61,7 +65,24 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				'chess': {
+					'black': 'hsl(var(--chess-black))',
+					'yellow': 'hsl(var(--chess-yellow))',
+					'yellow-bright': 'hsl(var(--chess-yellow-bright))',
+					'gold': 'hsl(var(--chess-gold))'
 				}
+			},
+			backgroundImage: {
+				'hero-gradient': 'var(--hero-gradient)'
+			},
+			boxShadow: {
+				'glow-yellow': 'var(--glow-yellow)',
+				'glow-yellow-strong': 'var(--glow-yellow-strong)',
+				'tournament': 'var(--shadow-tournament)'
+			},
+			transitionProperty: {
+				'smooth': 'var(--transition-smooth)'
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
