@@ -14,7 +14,44 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      registrations: {
+        Row: {
+          id: string
+          full_name: string
+          name_with_initials: string
+          fide_id: string | null
+          date_of_birth: string
+          gender: 'Male' | 'Female' | 'Prefer not to say'
+          contact_number: string
+          age_category: 'U6' | 'U8' | 'U10' | 'U12' | 'U14' | 'U16' | 'Open'
+          created_at: string
+          reference_number: string
+        }
+        Insert: {
+          id?: string
+          full_name: string
+          name_with_initials: string
+          fide_id?: string | null
+          date_of_birth: string
+          gender: 'Male' | 'Female' | 'Prefer not to say'
+          contact_number: string
+          age_category: 'U6' | 'U8' | 'U10' | 'U12' | 'U14' | 'U16' | 'Open'
+          created_at?: string
+          reference_number: string
+        }
+        Update: {
+          id?: string
+          full_name?: string
+          name_with_initials?: string
+          fide_id?: string | null
+          date_of_birth?: string
+          gender?: 'Male' | 'Female' | 'Prefer not to say'
+          contact_number?: string
+          age_category?: 'U6' | 'U8' | 'U10' | 'U12' | 'U14' | 'U16' | 'Open'
+          created_at?: string
+          reference_number?: string
+        }
+      }
     }
     Views: {
       [_ in never]: never

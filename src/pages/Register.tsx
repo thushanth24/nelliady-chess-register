@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -6,16 +6,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { format } from "date-fns";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { CalendarIcon, Loader2, Trophy, CheckCircle, Copy } from "lucide-react";
-import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import type { Database } from "@/integrations/supabase/types";
 
 const registrationSchema = z.object({
   fullName: z.string().min(2, "Full name must be at least 2 characters"),
@@ -58,34 +58,130 @@ const Register = () => {
     defaultValues: {
       honeypot: "",
     },
+    mode: 'onChange',
   });
+
+  useEffect(() => {
+    if (Object.keys(errors).length > 0) {
+      console.error('Form validation errors:', errors);
+    }
+  }, [errors]);
 
   const watchedDate = watch("dateOfBirth");
   const watchedGender = watch("gender");
   const watchedAgeCategory = watch("ageCategory");
   const watchedAgreeToTerms = watch("agreeToTerms");
 
-  const onSubmit = async (data: RegistrationForm) => {
+  // Calculate age category based on birth year only
+  const calculateAgeCategory = (dob: Date | undefined): string => {
+    if (!dob) return "";
+    
+    const birthYear = dob.getFullYear();
+    const currentYear = new Date().getFullYear();
+    const age = currentYear - birthYear;
+    
+    if (age < 6) return "U6";
+    if (age < 8) return "U8";
+    if (age < 10) return "U10";
+    if (age < 12) return "U12";
+    if (age < 14) return "U14";
+    if (age < 16) return "U16";
+    return "Open";
+  };
+
+  // Parse the age category from the display value (e.g., "U12 (2013-2014)" -> "U12")
+  const parseAgeCategory = (displayValue: string): string => {
+    const match = displayValue.match(/^(U\d+|Open)/);
+    return match ? match[0] : "";
+  };
+
+  // Update age category when date of birth changes
+  useEffect(() => {
+    if (watchedDate) {
+      const category = calculateAgeCategory(watchedDate);
+      setValue('ageCategory', category as any);
+    }
+  }, [watchedDate, setValue]);
+
+  const onSubmit = async (formData: RegistrationForm) => {
+    console.log('Form submitted', formData);
+    
+    // Check if form is already submitting
+    if (isSubmitting) {
+      console.log('Form is already submitting');
+      return;
+    }
+    
+    // Parse the age category if it contains additional text
+    const parsedFormData = {
+      ...formData,
+      ageCategory: parseAgeCategory(formData.ageCategory)
+    };
+    
+    console.log('Parsed form data:', parsedFormData);
+    
     setIsSubmitting(true);
     
     try {
-      // Simulate API call - In real implementation, this would go to Supabase
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      console.log('Starting registration process...');
+      const referenceNumber = generateReference();
       
-      // For now, we'll just show success
-      setRegistrationData(data);
+      // Prepare the data for Supabase
+      const registrationData = {
+        full_name: parsedFormData.fullName,
+        name_with_initials: parsedFormData.nameWithInitials,
+        fide_id: parsedFormData.fideId || null,
+        date_of_birth: parsedFormData.dateOfBirth.toISOString(),
+        gender: parsedFormData.gender,
+        contact_number: parsedFormData.contactNumber,
+        age_category: parsedFormData.ageCategory,
+        created_at: new Date().toISOString(),
+        reference_number: referenceNumber,
+        payment_status: 'unpaid' // Make sure this field is included
+      };
+
+      console.log('Registration data prepared:', registrationData);
+
+      // Type assertion to handle the Supabase types
+      type RegistrationInsert = Database['public']['Tables']['registrations']['Insert'];
+      
+      console.log('Attempting to insert into Supabase...');
+      
+      // Insert data into Supabase with more detailed error handling
+      const { data, error, status, statusText } = await supabase
+        .from('registrations')
+        .insert(registrationData as RegistrationInsert)
+        .select();
+
+      console.log('Supabase response:', { data, error, status, statusText });
+
+      if (error) {
+        console.error('Supabase error details:', {
+          code: error.code,
+          message: error.message,
+          details: error.details,
+          hint: error.hint
+        });
+        throw error;
+      }
+      
+      console.log('Insert successful, data:', data);
+      
+      // Update local state with the saved data
+      setRegistrationData(formData);
       setIsSuccess(true);
       
       toast({
         title: "Registration Successful!",
-        description: "Your tournament registration has been submitted.",
+        description: `Your tournament registration has been submitted. Reference: ${referenceNumber}`,
         variant: "default",
       });
       
     } catch (error) {
+      console.error('Registration error:', error);
       toast({
         title: "Registration Failed",
-        description: "There was an error submitting your registration. Please try again.",
+        description: error instanceof Error ? error.message : "There was an error submitting your registration. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -188,7 +284,38 @@ const Register = () => {
             <CardTitle>Player Information</CardTitle>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            <form 
+        onSubmit={async (e) => {
+          e.preventDefault();
+          console.log('Form submit event triggered');
+          
+          try {
+            // Manually trigger form validation
+            const isValid = await handleSubmit(
+              (data) => {
+                console.log('Form data is valid, submitting...', data);
+                return onSubmit(data);
+              },
+              (errors) => {
+                console.error('Form validation failed:', errors);
+                toast({
+                  title: "Validation Error",
+                  description: "Please check the form for errors.",
+                  variant: "destructive",
+                });
+              }
+            )();
+          } catch (error) {
+            console.error('Form submission error:', error);
+            toast({
+              title: "Submission Error",
+              description: "An error occurred while submitting the form. Please try again.",
+              variant: "destructive",
+            });
+          }
+        }} 
+        className="space-y-6"
+      >
               {/* Honeypot field - hidden from users */}
               <input
                 type="text"
@@ -237,35 +364,24 @@ const Register = () => {
               </div>
 
               <div className="space-y-2">
-                <Label>Date of Birth *</Label>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className={cn(
-                        "w-full justify-start text-left font-normal",
-                        !watchedDate && "text-muted-foreground"
-                      )}
-                    >
-                      <CalendarIcon className="mr-2 h-4 w-4" />
-                      {watchedDate ? format(watchedDate, "PPP") : "Pick a date"}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={watchedDate}
-                      onSelect={(date) => date && setValue("dateOfBirth", date)}
-                      disabled={(date) =>
-                        date > new Date() || date < new Date("1900-01-01")
-                      }
-                      initialFocus
-                      className="p-3 pointer-events-auto"
-                    />
-                  </PopoverContent>
-                </Popover>
+                <Label htmlFor="dateOfBirth">Date of Birth *</Label>
+                <Input
+                  type="date"
+                  id="dateOfBirth"
+                  className="w-full"
+                  value={watchedDate ? format(watchedDate, "yyyy-MM-dd") : ""}
+                  onChange={(e) => {
+                    const date = e.target.value ? new Date(e.target.value) : null;
+                    if (date && !isNaN(date.getTime())) {
+                      setValue("dateOfBirth", date);
+                    }
+                  }}
+                  max={format(new Date(), "yyyy-MM-dd")}
+                />
                 {errors.dateOfBirth && (
-                  <p className="text-sm text-destructive">{errors.dateOfBirth.message}</p>
+                  <p className="text-sm text-destructive">
+                    {errors.dateOfBirth.message}
+                  </p>
                 )}
               </div>
 
@@ -310,23 +426,34 @@ const Register = () => {
 
                 <div className="space-y-2">
                   <Label>Age Category *</Label>
-                  <Select value={watchedAgeCategory} onValueChange={(value) => setValue("ageCategory", value as any)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select age category" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="U6">Under 6</SelectItem>
-                      <SelectItem value="U8">Under 8</SelectItem>
-                      <SelectItem value="U10">Under 10</SelectItem>
-                      <SelectItem value="U12">Under 12</SelectItem>
-                      <SelectItem value="U14">Under 14</SelectItem>
-                      <SelectItem value="U16">Under 16</SelectItem>
-                      <SelectItem value="Open">Open</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  {errors.ageCategory && (
-                    <p className="text-sm text-destructive">{errors.ageCategory.message}</p>
-                  )}
+                  <div className="relative">
+                    <Input 
+                      value={watchedAgeCategory || ''} 
+                      readOnly 
+                      className={cn(
+                        "bg-muted/10 border-2 transition-colors",
+                        watchedAgeCategory 
+                          ? "border-primary/20 text-foreground font-medium" 
+                          : "border-muted text-muted-foreground"
+                      )}
+                      placeholder="Select date of birth first"
+                    />
+                    {watchedAgeCategory && (
+                      <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                        <div className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
+                          Auto-detected
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  <p className={cn(
+                    "text-xs transition-opacity",
+                    watchedDate ? "text-muted-foreground/50" : "text-muted-foreground"
+                  )}>
+                    {watchedDate 
+                      ? `Age category for ${format(watchedDate, 'MMMM d, yyyy')}`
+                      : "Will be set automatically based on date of birth"}
+                  </p>
                 </div>
               </div>
 
@@ -338,6 +465,7 @@ const Register = () => {
                     <li>Bank of Ceylon (BOC): 7396371 - M. Thushanth</li>
                     <li>Commercial Bank: 8001613595 - G. Thuvaragan</li>
                   </ul>
+                  <p className="mt-2">After payment, please send a WhatsApp message with your payment receipt to <span className="font-medium">0741231133</span> for confirmation.</p>
                 </div>
               </div>
 

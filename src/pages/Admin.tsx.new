@@ -1,0 +1,324 @@
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Loader2, LogOut, Users, CreditCard, UserCheck, UserCog } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+
+type Player = {
+  id: string;
+  created_at: string;
+  full_name: string;
+  name_with_initials: string;
+  fide_id: string | null;
+  date_of_birth: string;
+  gender: string;
+  contact_number: string;
+  age_category: string;
+  payment_status: 'unpaid' | 'paid_to_thuva' | 'paid_to_thushanth';
+  reference_number: string;
+};
+
+const Admin = () => {
+  const [players, setPlayers] = useState<Player[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [password, setPassword] = useState("");
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const { toast } = useToast();
+  const navigate = useNavigate();
+
+  const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || 'admin123';
+
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (password === ADMIN_PASSWORD) {
+      setIsAuthenticated(true);
+      localStorage.setItem('adminAuthenticated', 'true');
+    } else {
+      toast({
+        title: "Error",
+        description: "Incorrect password",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    localStorage.removeItem('adminAuthenticated');
+    setPassword('');
+  };
+
+  useEffect(() => {
+    const authStatus = localStorage.getItem('adminAuthenticated');
+    if (authStatus === 'true') {
+      setIsAuthenticated(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchPlayers();
+    }
+  }, [isAuthenticated]);
+
+  const fetchPlayers = async () => {
+    try {
+      setLoading(true);
+      console.log('Fetching registrations from Supabase...');
+      
+      const { data, error } = await supabase
+        .from('registrations')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      
+      const formattedData = (data || []).map(reg => ({
+        ...reg,
+        payment_status: (reg.payment_status || 'unpaid') as 'unpaid' | 'paid_to_thuva' | 'paid_to_thushanth'
+      }));
+      
+      setPlayers(formattedData);
+    } catch (error: any) {
+      console.error('Error in fetchPlayers:', error);
+      toast({
+        title: "Error",
+        description: error?.message || "Failed to load registrations. Please check your connection and try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updatePaymentStatus = async (playerId: string, status: Player['payment_status']) => {
+    try {
+      setUpdatingId(playerId);
+      const { error } = await supabase
+        .from('registrations')
+        .update({ payment_status: status })
+        .eq('id', playerId);
+
+      if (error) throw error;
+
+      setPlayers(players.map(player => 
+        player.id === playerId ? { ...player, payment_status: status } : player
+      ));
+
+      toast({
+        title: "Success",
+        description: "Payment status updated successfully",
+      });
+    } catch (error) {
+      console.error('Error updating payment status:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update payment status",
+        variant: "destructive",
+      });
+    } finally {
+      setUpdatingId(null);
+    }
+  };
+
+  // Calculate statistics
+  const totalRegistered = players.length;
+  const totalPaid = players.filter(p => p.payment_status !== 'unpaid').length;
+  const paidToThuva = players.filter(p => p.payment_status === 'paid_to_thuva').length;
+  const paidToThushanth = players.filter(p => p.payment_status === 'paid_to_thushanth').length;
+
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+        <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+          <h1 className="text-2xl font-bold text-center mb-6">Admin Login</h1>
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+                Password
+              </label>
+              <Input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter admin password"
+                className="w-full"
+              />
+            </div>
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Please wait
+                </>
+              ) : (
+                'Login'
+              )}
+            </Button>
+          </form>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50 p-4 md:p-8">
+      <div className="max-w-7xl mx-auto">
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-2xl font-bold">Player Registrations</h1>
+          <Button 
+            variant="outline" 
+            onClick={handleLogout}
+            className="flex items-center gap-2"
+          >
+            <LogOut className="h-4 w-4" />
+            Logout
+          </Button>
+        </div>
+
+        {/* Statistics Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <div className="bg-white p-4 rounded-lg shadow">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-500">Total Registered</p>
+                <p className="text-2xl font-bold">{totalRegistered}</p>
+              </div>
+              <div className="p-3 bg-blue-100 rounded-full">
+                <Users className="h-6 w-6 text-blue-600" />
+              </div>
+            </div>
+          </div>
+          
+          <div className="bg-white p-4 rounded-lg shadow">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-500">Total Paid</p>
+                <p className="text-2xl font-bold">{totalPaid}</p>
+                <p className="text-xs text-gray-500">
+                  {totalRegistered > 0 ? Math.round((totalPaid / totalRegistered) * 100) : 0}% of total
+                </p>
+              </div>
+              <div className="p-3 bg-green-100 rounded-full">
+                <CreditCard className="h-6 w-6 text-green-600" />
+              </div>
+            </div>
+          </div>
+          
+          <div className="bg-white p-4 rounded-lg shadow">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-500">Paid to Thuva</p>
+                <p className="text-2xl font-bold">{paidToThuva}</p>
+                <p className="text-xs text-gray-500">
+                  {totalPaid > 0 ? Math.round((paidToThuva / totalPaid) * 100) : 0}% of paid
+                </p>
+              </div>
+              <div className="p-3 bg-purple-100 rounded-full">
+                <UserCheck className="h-6 w-6 text-purple-600" />
+              </div>
+            </div>
+          </div>
+          
+          <div className="bg-white p-4 rounded-lg shadow">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-500">Paid to Thushanth</p>
+                <p className="text-2xl font-bold">{paidToThushanth}</p>
+                <p className="text-xs text-gray-500">
+                  {totalPaid > 0 ? Math.round((paidToThushanth / totalPaid) * 100) : 0}% of paid
+                </p>
+              </div>
+              <div className="p-3 bg-orange-100 rounded-full">
+                <UserCog className="h-6 w-6 text-orange-600" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-lg shadow overflow-hidden">
+          <div className="overflow-x-auto">
+            {loading ? (
+              <div className="flex justify-center items-center p-8">
+                <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
+              </div>
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Contact</TableHead>
+                    <TableHead>Age Category</TableHead>
+                    <TableHead>Payment Status</TableHead>
+                    <TableHead>Reference</TableHead>
+                    <TableHead>Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {players.map((player) => (
+                    <TableRow key={player.id}>
+                      <TableCell className="font-medium">{player.full_name}</TableCell>
+                      <TableCell>{player.contact_number}</TableCell>
+                      <TableCell>{player.age_category}</TableCell>
+                      <TableCell>
+                        <Select
+                          value={player.payment_status}
+                          onValueChange={(value: Player['payment_status']) =>
+                            updatePaymentStatus(player.id, value)
+                          }
+                          disabled={updatingId === player.id}
+                        >
+                          <SelectTrigger className="w-[180px]">
+                            <SelectValue placeholder="Select status" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="unpaid">Unpaid</SelectItem>
+                            <SelectItem value="paid_to_thuva">Paid to Thuva</SelectItem>
+                            <SelectItem value="paid_to_thushanth">Paid to Thushanth</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </TableCell>
+                      <TableCell>
+                        {player.reference_number ? (
+                          <span className="font-mono text-sm">{player.reference_number}</span>
+                        ) : (
+                          <span className="text-gray-400">-</span>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {updatingId === player.id && (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Admin;
