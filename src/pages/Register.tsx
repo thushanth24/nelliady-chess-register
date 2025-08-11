@@ -119,7 +119,7 @@ const Register = () => {
 
   if (isSuccess && registrationData) {
     return (
-      <div className="min-h-screen bg-muted/50 py-12">
+      <div className="min-h-screen bg-muted/50 py-6 sm:py-8 lg:py-12 overflow-x-hidden">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
           <Card className="border-success shadow-lg">
             <CardHeader className="text-center">
@@ -172,14 +172,14 @@ const Register = () => {
   }
 
   return (
-    <div className="min-h-screen bg-muted/50 py-12">
+    <div className="min-h-screen bg-muted/50 py-6 sm:py-8 lg:py-12 overflow-x-hidden">
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-8">
-          <div className="flex items-center justify-center space-x-2 mb-4">
-            <Trophy className="h-8 w-8 text-chess-yellow" />
-            <h1 className="text-3xl lg:text-4xl font-bold">Tournament Registration</h1>
+        <div className="text-center mb-6 sm:mb-8">
+          <div className="flex items-center justify-center space-x-2 mb-3 sm:mb-4">
+            <Trophy className="h-6 w-6 sm:h-8 sm:w-8 text-chess-yellow" />
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold break-words">Tournament Registration</h1>
           </div>
-          <p className="text-xl text-muted-foreground">Chess Tournament – Season 06</p>
+          <p className="text-lg sm:text-xl text-muted-foreground break-words">Chess Tournament – Season 06</p>
         </div>
 
         <Card>
@@ -204,9 +204,10 @@ const Register = () => {
                     id="fullName"
                     {...register("fullName")}
                     placeholder="Enter your full name"
+                    className="w-full"
                   />
                   {errors.fullName && (
-                    <p className="text-sm text-destructive">{errors.fullName.message}</p>
+                    <p className="text-sm text-destructive break-words">{errors.fullName.message}</p>
                   )}
                 </div>
 
@@ -216,9 +217,10 @@ const Register = () => {
                     id="nameWithInitials"
                     {...register("nameWithInitials")}
                     placeholder="e.g., A.B. Smith"
+                    className="w-full"
                   />
                   {errors.nameWithInitials && (
-                    <p className="text-sm text-destructive">{errors.nameWithInitials.message}</p>
+                    <p className="text-sm text-destructive break-words">{errors.nameWithInitials.message}</p>
                   )}
                 </div>
               </div>
@@ -229,6 +231,7 @@ const Register = () => {
                   id="fideId"
                   {...register("fideId")}
                   placeholder="Enter your FIDE ID if you have one"
+                  className="w-full"
                 />
               </div>
 
@@ -297,9 +300,10 @@ const Register = () => {
                     id="contactNumber"
                     {...register("contactNumber")}
                     placeholder="077 123 4567"
+                    className="w-full"
                   />
                   {errors.contactNumber && (
-                    <p className="text-sm text-destructive">{errors.contactNumber.message}</p>
+                    <p className="text-sm text-destructive break-words">{errors.contactNumber.message}</p>
                   )}
                 </div>
 
@@ -348,9 +352,10 @@ const Register = () => {
                     id="paymentReference"
                     {...register("paymentReference")}
                     placeholder="Enter payment reference"
+                    className="w-full"
                   />
                   {errors.paymentReference && (
-                    <p className="text-sm text-destructive">{errors.paymentReference.message}</p>
+                    <p className="text-sm text-destructive break-words">{errors.paymentReference.message}</p>
                   )}
                 </div>
               </div>
