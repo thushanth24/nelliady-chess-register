@@ -108,9 +108,26 @@ const Admin = () => {
     }
   }, []);
 
+  const logTableSchema = async () => {
+    try {
+      const { data: schema, error } = await supabase.rpc('pg_table_def', {
+        table_name: 'registrations'
+      });
+      
+      if (error) {
+        console.error('Error fetching table schema:', error);
+      } else {
+        console.log('Table schema:', schema);
+      }
+    } catch (err) {
+      console.error('Failed to fetch table schema:', err);
+    }
+  };
+
   useEffect(() => {
     if (isAuthenticated) {
       fetchPlayers();
+      logTableSchema();
     }
   }, [isAuthenticated]);
 
@@ -129,6 +146,13 @@ const Admin = () => {
           .from('registrations')
           .select('*')
           .order('created_at', { ascending: false });
+        
+        console.log('Raw Supabase response:', { resultData, resultError });
+        
+        if (resultData) {
+          console.log('First player data sample:', resultData[0]);
+          console.log('All payment statuses:', resultData.map(p => p.payment_status));
+        }
         
         data = resultData || [];
         error = resultError;
@@ -190,30 +214,92 @@ const Admin = () => {
   };
 
   const updatePaymentStatus = async (playerId: string, status: Player['payment_status']) => {
+    console.log('updatePaymentStatus called with:', { playerId, status });
     try {
       setUpdatingId(playerId);
-      const { error } = await supabase
+      
+      // 1. First, verify the player exists
+      console.log('Verifying player exists...');
+      const { data: player, error: fetchError } = await supabase
         .from('registrations')
-        .update({ payment_status: status })
-        .eq('id', playerId);
+        .select('id')
+        .eq('id', playerId)
+        .single();
 
-      if (error) throw error;
+      if (fetchError || !player) {
+        console.error('Error finding player:', fetchError);
+        throw new Error(fetchError?.message || 'Player not found');
+      }
 
-      setPlayers(players.map(player => 
-        player.id === playerId ? { ...player, payment_status: status } : player
-      ));
+      // 2. Use raw SQL to update the payment status
+      console.log('Updating payment status with raw SQL...');
+      const { data: updateResult, error: updateError } = await supabase.rpc('update_payment_status', {
+        p_id: playerId,
+        p_status: status
+      });
+
+      console.log('Raw SQL update result:', { updateResult, updateError });
+
+      if (updateError) {
+        console.error('SQL update error:', updateError);
+        throw updateError;
+      }
+
+      if (updateError) {
+        console.error('Update error details:', {
+          code: updateError.code,
+          message: updateError.message,
+          details: updateError.details,
+          hint: updateError.hint
+        });
+        throw updateError;
+      }
+
+      console.log('Update successful, refreshing data...');
+      
+      // 4. Refresh the data
+      await fetchPlayers();
+      
+      // 5. Get the updated player data
+      const { data: updatedPlayer } = await supabase
+        .from('registrations')
+        .select('*')
+        .eq('id', playerId)
+        .single();
+
+      if (!updatedPlayer) {
+        throw new Error('Failed to verify update');
+      }
+
+      console.log('Successfully updated player:', updatedPlayer);
 
       toast({
         title: "Success",
-        description: "Payment status updated successfully",
+        description: `Payment status updated to ${status.replace(/_/g, ' ')}`,
       });
-    } catch (error) {
-      console.error('Error updating payment status:', error);
+      
+    } catch (error: any) {
+      console.error('Error in updatePaymentStatus:', {
+        name: error?.name,
+        message: error?.message,
+        code: error?.code,
+        details: error?.details,
+        hint: error?.hint
+      });
+      
       toast({
         title: "Error",
-        description: "Failed to update payment status",
+        description: error?.message || "Failed to update payment status. Please try again.",
         variant: "destructive",
       });
+      
+      // Try to refresh the data to ensure UI consistency
+      try {
+        console.log('Attempting to refresh data after error...');
+        await fetchPlayers();
+      } catch (refreshError) {
+        console.error('Error during data refresh after error:', refreshError);
+      }
     } finally {
       setUpdatingId(null);
     }

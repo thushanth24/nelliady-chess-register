@@ -364,26 +364,35 @@ const Register = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="dateOfBirth">Date of Birth *</Label>
-                <Input
-                  type="date"
-                  id="dateOfBirth"
-                  value={watchedDate ? format(watchedDate, "yyyy-MM-dd") : ""}
-                  onChange={(e) => {
-                    const date = e.target.value ? new Date(e.target.value) : null;
-                    if (date && !isNaN(date.getTime())) {
-                      setValue("dateOfBirth", date);
-                    }
-                  }}
-                  max={format(new Date(), "yyyy-MM-dd")}
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-chess-yellow focus:border-transparent"
-                />
-                {errors.dateOfBirth && (
-                  <p className="text-sm text-destructive">
-                    {errors.dateOfBirth.message}
-                  </p>
-                )}
-              </div>
+  <Label htmlFor="dateOfBirth">Date of Birth (YYYY-MM-DD) *</Label>
+  <Input
+    type="date"
+    id="dateOfBirth"
+    value={watchedDate ? (watchedDate instanceof Date ? format(watchedDate, "yyyy-MM-dd") : '') : ''}
+    onChange={(e) => {
+      try {
+        const value = e.target.value;
+        if (value) {
+          const date = new Date(value);
+          if (!isNaN(date.getTime())) {
+            setValue("dateOfBirth", date, { shouldValidate: true });
+            return;
+          }
+        }
+        setValue("dateOfBirth", undefined as any, { shouldValidate: true });
+      } catch (error) {
+        console.error('Error handling date change:', error);
+        setValue("dateOfBirth", undefined as any, { shouldValidate: true });
+      }
+    }}
+    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-chess-yellow focus:border-transparent"
+  />
+  {errors.dateOfBirth && (
+    <p className="text-sm text-destructive">
+      {errors.dateOfBirth.message}
+    </p>
+  )}
+</div>
 
               <div className="space-y-2">
                 <Label>Gender *</Label>
