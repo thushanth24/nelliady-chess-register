@@ -364,35 +364,42 @@ const Register = () => {
               </div>
 
               <div className="space-y-2">
-  <Label htmlFor="dateOfBirth">Date of Birth (YYYY-MM-DD) *</Label>
-  <Input
-    type="date"
-    id="dateOfBirth"
-    value={watchedDate ? (watchedDate instanceof Date ? format(watchedDate, "yyyy-MM-dd") : '') : ''}
-    onChange={(e) => {
-      try {
-        const value = e.target.value;
-        if (value) {
-          const date = new Date(value);
-          if (!isNaN(date.getTime())) {
-            setValue("dateOfBirth", date, { shouldValidate: true });
-            return;
-          }
-        }
-        setValue("dateOfBirth", undefined as any, { shouldValidate: true });
-      } catch (error) {
-        console.error('Error handling date change:', error);
-        setValue("dateOfBirth", undefined as any, { shouldValidate: true });
-      }
-    }}
-    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-chess-yellow focus:border-transparent"
-  />
-  {errors.dateOfBirth && (
-    <p className="text-sm text-destructive">
-      {errors.dateOfBirth.message}
-    </p>
-  )}
-</div>
+                <Label htmlFor="dateOfBirth">Date of Birth *</Label>
+                <div className="relative">
+                  <Input
+                    type="date"
+                    id="dateOfBirth"
+                    value={watchedDate ? (watchedDate instanceof Date ? format(watchedDate, "yyyy-MM-dd") : '') : ''}
+                    onChange={(e) => {
+                      try {
+                        const value = e.target.value;
+                        if (value) {
+                          const date = new Date(value);
+                          if (!isNaN(date.getTime())) {
+                            setValue("dateOfBirth", date, { shouldValidate: true });
+                            return;
+                          }
+                        }
+                        setValue("dateOfBirth", undefined as any, { shouldValidate: true });
+                      } catch (error) {
+                        console.error('Error handling date change:', error);
+                        setValue("dateOfBirth", undefined as any, { shouldValidate: true });
+                      }
+                    }}
+                    className="w-full appearance-none border border-gray-300 rounded-md px-3 py-2.5 pr-10 focus:outline-none focus:ring-2 focus:ring-chess-yellow focus:border-transparent"
+                    placeholder="Select date"
+                  />
+                  <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                    <CalendarIcon className="h-5 w-5 text-gray-400" />
+                  </div>
+                </div>
+                <p className="text-xs text-muted-foreground mt-1">Format: YYYY-MM-DD</p>
+                {errors.dateOfBirth && (
+                  <p className="text-sm text-destructive mt-1">
+                    {errors.dateOfBirth.message}
+                  </p>
+                )}
+              </div>
 
               <div className="space-y-2">
                 <Label>Gender *</Label>
