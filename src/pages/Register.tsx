@@ -80,12 +80,12 @@ const Register = () => {
     const currentYear = new Date().getFullYear();
     const age = currentYear - birthYear;
     
-    if (age < 6) return "U6";
-    if (age < 8) return "U8";
-    if (age < 10) return "U10";
-    if (age < 12) return "U12";
-    if (age < 14) return "U14";
-    if (age < 16) return "U16";
+    if (age <= 6) return "U6";
+    if (age <= 8) return "U8";
+    if (age <= 10) return "U10";
+    if (age <= 12) return "U12";
+    if (age <= 14) return "U14";
+    if (age <= 16) return "U16";
     return "Open";
   };
 
