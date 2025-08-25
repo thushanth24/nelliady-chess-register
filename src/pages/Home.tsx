@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "react-router-dom";
+import { Facebook, Instagram, Globe, MessageCircle } from 'lucide-react';
 import { 
   Calendar, 
   Clock, 
@@ -25,7 +26,7 @@ const Home = () => {
   };
 
   return (
-    <div className="min-h-screen overflow-x-hidden">
+    <div className="min-h-screen overflow-x-hidden bg-gradient-to-b from-blue-50 to-blue-100">
       {/* Hero Section */}
       <section className="relative bg-hero-gradient text-white py-12 sm:py-16 lg:py-32 overflow-hidden">
         <div className="absolute inset-0 bg-black/20"></div>
@@ -101,6 +102,133 @@ const Home = () => {
           </div>
         </div>
       </section>
+
+
+        {/* Sponsors Section */}
+        <section id="sponsors" className="py-12 sm:py-16 lg:py-24 bg-blue-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-8 sm:mb-12">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3 sm:mb-4">Our Sponsors</h2>
+            <p className="text-lg sm:text-xl text-muted-foreground">We're grateful for the support of our generous sponsors</p>
+          </div>
+
+          {/* Main Sponsor */}
+          <div className="mb-16 text-center">
+            <h3 className="text-lg sm:text-xl font-semibold text-chess-yellow mb-6">Main Sponsor</h3>
+            <div className="max-w-2xl mx-auto">
+              <Card className="p-6 sm:p-8 hover:shadow-lg transition-all duration-300 border-t-4 border-yellow-400 bg-white/80 backdrop-blur-sm">
+                <CardContent className="p-2 flex flex-col items-center justify-center">
+                  <div className="h-32 w-32 sm:h-40 sm:w-40 mb-6 bg-gray-50 rounded-xl flex items-center justify-center overflow-hidden">
+                    <img 
+                      src="/posters/marutham.jpg" 
+                      alt="Marutham Marketing" 
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.onerror = null;
+                        target.style.display = 'none';
+                        const fallback = target.parentElement?.querySelector('.sponsor-fallback');
+                        if (fallback) {
+                          (fallback as HTMLElement).style.display = 'flex';
+                        }
+                      }}
+                    />
+                    <div className="sponsor-fallback w-full h-full flex items-center justify-center bg-gray-100 rounded-lg p-4" style={{display: 'none'}}>
+                      <span className="text-sm font-medium text-gray-400">Main Sponsor</span>
+                    </div>
+                  </div>
+                  <h3 className="font-bold text-xl text-center">Marutham Marketing Pvt Ltd</h3>
+                  <p className="text-sm text-yellow-600 font-medium text-center mb-4">Title Sponsor</p>
+                  <p className="text-sm text-gray-600 text-center mb-4">Leading marketing firm with a strong presence in the region, supporting local sports and community initiatives.</p>
+                 
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+
+          {/* Valued Sponsor */}
+          <div className="mt-16">
+            <h3 className="text-lg sm:text-xl font-semibold text-center text-chess-yellow mb-8">Our Valued Sponsor</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8 max-w-4xl mx-auto">
+              {/* AAA Group */}
+
+              <Card className="p-6 sm:p-8 hover:shadow-lg transition-all duration-300 bg-gradient-to-br from-emerald-50 to-emerald-100 border-t-4 border-emerald-300">
+                <CardContent className="p-2 flex flex-col items-center justify-center">
+                  <div className="h-24 w-24 sm:h-32 sm:w-32 mb-6 bg-white/50 rounded-xl flex items-center justify-center overflow-hidden shadow-sm">
+                    <img 
+                      src="/posters/AAA.jpeg" 
+                      alt="AAA Group" 
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.onerror = null;
+                        target.style.display = 'none';
+                        const fallback = target.parentElement?.querySelector('.sponsor-fallback');
+                        if (fallback) {
+                          (fallback as HTMLElement).style.display = 'flex';
+                        }
+                      }}
+                    />
+                    <div className="sponsor-fallback w-full h-full flex items-center justify-center bg-gray-100 rounded-lg p-2" style={{display: 'none'}}>
+                      <span className="text-sm font-medium text-gray-400">AAA Grand Master</span>
+                    </div>
+                  </div>
+                  <h3 className="font-bold text-xl text-center">AAA Grand Master</h3>
+                  <p className="text-sm text-emerald-700 font-medium text-center mb-2">Valued Sponsor</p>
+                  <p className="text-sm text-gray-700/90 text-center mb-4 px-2">A dynamic chess club with a focus on competitive play, skill development, and community engagement initiatives.</p>
+                  <div className="flex gap-3 justify-center mt-2">
+                    <a 
+                      href="https://www.facebook.com/profile.php?id=100057153802267" 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="text-gray-500 hover:text-blue-600 transition-colors"
+                    >
+                      <Facebook className="w-5 h-5" />
+                    </a>
+                    <a 
+                      href="https://www.facebook.com/profile.php?id=100057153802267" 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="text-gray-500 hover:text-pink-600 transition-colors"
+                    >
+                      <Instagram className="w-5 h-5" />
+                    </a>
+                  
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Available Sponsorship */}
+              <Card className="p-6 sm:p-8 hover:shadow-lg transition-all duration-300 bg-gradient-to-br from-amber-50 to-amber-100 border-t-4 border-amber-300 flex flex-col items-center justify-center">
+                <CardContent className="p-2 flex flex-col items-center justify-center h-full">
+                  <div className="h-24 w-24 sm:h-32 sm:w-32 mb-6 bg-amber-50 rounded-full flex items-center justify-center shadow-inner border-4 border-amber-200">
+                    <div className="text-amber-500">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-12 h-12 sm:w-16 sm:h-16">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        <path d="M14 15h-4v-4"></path>
+                        <path d="M12 15V9"></path>
+                      </svg>
+                    </div>
+                  </div>
+                  <h3 className="font-bold text-xl text-center text-amber-800 mb-2">Sponsorship Available</h3>
+                  <p className="text-amber-700/90 text-center mb-4 px-2">Become a valued sponsor and support our chess community. Limited opportunities available!</p>
+                  <a 
+                    href="https://wa.me/94741231133?text=Hi%20Nelliady%20Chess%20Club%2C%20I'm%20interested%20in%20becoming%20a%20sponsor"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-2 inline-flex items-center justify-center px-6 py-2 border border-transparent text-sm font-medium rounded-md text-amber-900 bg-amber-400 hover:bg-amber-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 transition-colors"
+                  >
+                    Contact Us
+                  </a>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+
+       
+        </div>
+      </section>
+
 
       {/* Tournament Details Section */}
       <section id="details" className="py-12 sm:py-16 lg:py-24 bg-muted/50">
@@ -283,6 +411,7 @@ const Home = () => {
         </div>
       </section>
 
+    
       {/* Footer */}
       <footer className="bg-chess-black text-white py-8 sm:py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
