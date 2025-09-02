@@ -176,25 +176,92 @@ const Home = () => {
                   <h3 className="font-bold text-xl text-center">AAA Grand Master</h3>
                   <p className="text-sm text-emerald-700 font-medium text-center mb-2">Valued Sponsor</p>
                   <p className="text-sm text-gray-700/90 text-center mb-4 px-2">A dynamic chess club with a focus on competitive play, skill development, and community engagement initiatives.</p>
-                  <div className="flex gap-3 justify-center mt-2">
-                    <a 
-                      href="https://www.facebook.com/profile.php?id=100057153802267" 
-                      target="_blank" 
-                      rel="noopener noreferrer" 
-                      className="text-gray-500 hover:text-blue-600 transition-colors"
-                    >
-                      <Facebook className="w-5 h-5" />
-                    </a>
-                    <a 
-                      href="https://www.facebook.com/profile.php?id=100057153802267" 
-                      target="_blank" 
-                      rel="noopener noreferrer" 
-                      className="text-gray-500 hover:text-pink-600 transition-colors"
-                    >
-                      <Instagram className="w-5 h-5" />
-                    </a>
-                  
+                
+                </CardContent>
+              </Card>
+
+              
+              <Card className="p-6 sm:p-8 hover:shadow-lg transition-all duration-300 bg-gradient-to-br from-emerald-50 to-emerald-100 border-t-4 border-emerald-300">
+                <CardContent className="p-2 flex flex-col items-center justify-center">
+                  <div className="h-24 w-24 sm:h-32 sm:w-32 mb-6 bg-white/50 rounded-xl flex items-center justify-center overflow-hidden shadow-sm">
+                    <img 
+                      src="/posters/maalai.jpeg" 
+                      alt="AAA Group" 
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.onerror = null;
+                        target.style.display = 'none';
+                        const fallback = target.parentElement?.querySelector('.sponsor-fallback');
+                        if (fallback) {
+                          (fallback as HTMLElement).style.display = 'flex';
+                        }
+                      }}
+                    />
+                    <div className="sponsor-fallback w-full h-full flex items-center justify-center bg-gray-100 rounded-lg p-2" style={{display: 'none'}}>
+                      <span className="text-sm font-medium text-gray-400">Maalai Matrimony</span>
+                    </div>
                   </div>
+                  <h3 className="font-bold text-xl text-center">Maalai Matrimony</h3>
+                  <p className="text-sm text-emerald-700 font-medium text-center mb-2">Valued Sponsor</p>
+                  <p className="text-sm text-gray-700/90 text-center mb-4 px-2">A dynamic chess club with a focus on competitive play, skill development, and community engagement initiatives.</p>
+               
+                </CardContent>
+              </Card>
+
+              <Card className="p-6 sm:p-8 hover:shadow-lg transition-all duration-300 bg-gradient-to-br from-emerald-50 to-emerald-100 border-t-4 border-emerald-300">
+                <CardContent className="p-2 flex flex-col items-center justify-center">
+                  <div className="h-24 w-24 sm:h-32 sm:w-32 mb-6 bg-white/50 rounded-xl flex items-center justify-center overflow-hidden shadow-sm">
+                    <img 
+                      src="/posters/shoot.jpeg" 
+                      alt="AAA Group" 
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.onerror = null;
+                        target.style.display = 'none';
+                        const fallback = target.parentElement?.querySelector('.sponsor-fallback');
+                        if (fallback) {
+                          (fallback as HTMLElement).style.display = 'flex';
+                        }
+                      }}
+                    />
+                    <div className="sponsor-fallback w-full h-full flex items-center justify-center bg-gray-100 rounded-lg p-2" style={{display: 'none'}}>
+                      <span className="text-sm font-medium text-gray-400">Maalai Matrimony</span>
+                    </div>
+                  </div>
+                  <h3 className="font-bold text-xl text-center">SHOOTS</h3>
+                  <p className="text-sm text-emerald-700 font-medium text-center mb-2">Valued Sponsor</p>
+                  <p className="text-sm text-gray-700/90 text-center mb-4 px-2">A dynamic chess club with a focus on competitive play, skill development, and community engagement initiatives.</p>
+                 
+                </CardContent>
+              </Card>
+
+              <Card className="p-6 sm:p-8 hover:shadow-lg transition-all duration-300 bg-gradient-to-br from-emerald-50 to-emerald-100 border-t-4 border-emerald-300">
+                <CardContent className="p-2 flex flex-col items-center justify-center">
+                  <div className="h-24 w-24 sm:h-32 sm:w-32 mb-6 bg-white/50 rounded-xl flex items-center justify-center overflow-hidden shadow-sm">
+                    <img 
+                      src="/posters/smart.jpeg" 
+                      alt="AAA Group" 
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.onerror = null;
+                        target.style.display = 'none';
+                        const fallback = target.parentElement?.querySelector('.sponsor-fallback');
+                        if (fallback) {
+                          (fallback as HTMLElement).style.display = 'flex';
+                        }
+                      }}
+                    />
+                    <div className="sponsor-fallback w-full h-full flex items-center justify-center bg-gray-100 rounded-lg p-2" style={{display: 'none'}}>
+                      <span className="text-sm font-medium text-gray-400">Maalai Matrimony</span>
+                    </div>
+                  </div>
+                  <h3 className="font-bold text-xl text-center">Smart store</h3>
+                  <p className="text-sm text-emerald-700 font-medium text-center mb-2">Valued Sponsor</p>
+                  <p className="text-sm text-gray-700/90 text-center mb-4 px-2">A dynamic chess club with a focus on competitive play, skill development, and community engagement initiatives.</p>
+                
                 </CardContent>
               </Card>
 
